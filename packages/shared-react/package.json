@@ -6,7 +6,7 @@
   "dependencies": {
     "@karakeep/shared": "workspace:^0.1.0",
     "@karakeep/trpc": "workspace:^0.1.0",
-    "@tanstack/react-query": "^5.67.1",
+    "@tanstack/react-query": "5.69.0",
     "@trpc/client": "11.0.0",
     "superjson": "^2.2.1"
   },
@@ -16,7 +16,7 @@
     "@karakeep/tsconfig": "workspace:^0.1.0"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
+    "react": "18.3.1",
     "react-native": "^0.76.3"
   },
   "peerDependenciesMeta": {

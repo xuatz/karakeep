@@ -19,7 +19,7 @@
     "@karakeep/trpc": "workspace:*",
     "hono": "^4.7.10",
     "rss": "^1.2.2",
-    "zod": "^3.24.2"
+    "zod": "3.24.2"
   },
   "devDependencies": {
     "@karakeep/eslint-config": "workspace:^0.2.0",
