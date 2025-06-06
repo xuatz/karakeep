@@ -16,7 +16,7 @@
   "dependencies": {
     "@karakeep/sdk": "workspace:*",
     "@karakeep/trpc": "workspace:^0.1.0",
-    "superjson": "^2.2.1"
+    "superjson": "2.2.1"
   },
   "devDependencies": {
     "@karakeep/eslint-config": "workspace:^0.2.0",
