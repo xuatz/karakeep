@@ -33,7 +33,7 @@ fi
 # Start Chrome if not already running
 if ! port_in_use 9222; then
     echo "Starting headless Chrome..."
-    docker run -d -p 9222:9222 --name karakeep-chrome gcr.io/zenika-hub/alpine-chrome:123 \
+    docker run -d -p 9222:9222 --name karakeep-chrome gcr.io/zenika-hub/alpine-chrome:124 \
         --no-sandbox \
         --disable-gpu \
         --disable-dev-shm-usage \
@@ -61,23 +61,16 @@ if [ -n "$DATA_DIR" ] && [ ! -d "$DATA_DIR" ]; then
     mkdir -p "$DATA_DIR"
 fi
 
-# Start the web app
-echo "Starting web app..."
+echo "Starting web app and workers..."
 pnpm web & WEB_PID=$!
-
-# Wait for web app to be ready
-echo "Waiting for web app to start..."
-until curl -s http://localhost:3000 > /dev/null 2>&1; do
-    sleep 1
-done
-
-# Run database migrations
-echo "Running database migrations..."
-pnpm run db:migrate
-
-# Start workers
-echo "Starting workers..."
 pnpm workers & WORKERS_PID=$!
+
+# Give services a moment to start
+sleep 4
+
+# Run database migrations after services have started
+echo "Running database migrations..."
+pnpm run db:migrate || echo "Note: Database might already be migrated"
 
 # Function to handle script termination
 cleanup() {
