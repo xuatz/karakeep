@@ -61,16 +61,12 @@ if [ -n "$DATA_DIR" ] && [ ! -d "$DATA_DIR" ]; then
     mkdir -p "$DATA_DIR"
 fi
 
+echo "Running database migrations..."
+pnpm run db:migrate
+
 echo "Starting web app and workers..."
 pnpm web & WEB_PID=$!
 pnpm workers & WORKERS_PID=$!
-
-# Give services a moment to start
-sleep 4
-
-# Run database migrations after services have started
-echo "Running database migrations..."
-pnpm run db:migrate || echo "Note: Database might already be migrated"
 
 # Function to handle script termination
 cleanup() {
@@ -80,6 +76,20 @@ cleanup() {
     docker rm karakeep-meilisearch karakeep-chrome 2>/dev/null
     exit 0
 }
+
+# Wait for web app to be ready (max 30 seconds)
+echo "Waiting for web app to start..."
+ATTEMPT=0
+while [ $ATTEMPT -lt 30 ]; do
+    if nc -z localhost 3000 2>/dev/null; then
+        break
+    fi
+    sleep 1
+    ATTEMPT=$((ATTEMPT + 1))
+    if [ $ATTEMPT -eq 30 ]; then
+        echo "Warning: Web app may not have started properly after 30 seconds"
+    fi
+done
 
 # Set up trap to catch termination signals
 trap cleanup SIGINT SIGTERM
