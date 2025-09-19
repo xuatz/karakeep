@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { CalendarIcon, Clock } from "lucide-react";
-import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -12,6 +10,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon, Clock } from "lucide-react";
 
 interface DateTimePickerProps {
   date?: Date | null;
@@ -31,9 +31,7 @@ export function DateTimePicker({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     date ?? undefined,
   );
-  const [hour, setHour] = useState<string>(
-    date ? format(date, "HH") : "09",
-  );
+  const [hour, setHour] = useState<string>(date ? format(date, "HH") : "09");
   const [minute, setMinute] = useState<string>(
     date ? format(date, "mm") : "00",
   );

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { zCursorV2 } from "./pagination";
+import { zReminderSchema } from "./reminders";
 import { zBookmarkTagSchema } from "./tags";
 
 export const MAX_BOOKMARK_TITLE_LENGTH = 1000;
@@ -99,6 +100,7 @@ export const zBookmarkSchema = zBareBookmarkSchema.merge(
     tags: z.array(zBookmarkTagSchema),
     content: zBookmarkContentSchema,
     assets: z.array(zAssetSchema),
+    reminder: zReminderSchema.optional(),
   }),
 );
 export type ZBookmark = z.infer<typeof zBookmarkSchema>;
@@ -186,8 +188,6 @@ export const zGetBookmarksRequestSchema = z.object({
   useCursorV2: z.boolean().optional(),
   sortOrder: zSortOrder.exclude(["relevance"]).optional().default("desc"),
   includeContent: z.boolean().optional().default(false),
-  // TODO(705): still not sure if we want to keep this filter
-  hideWithUpcomingReminders: z.boolean().optional(),
 });
 export type ZGetBookmarksRequest = z.infer<typeof zGetBookmarksRequestSchema>;
 

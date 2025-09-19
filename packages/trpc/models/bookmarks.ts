@@ -10,7 +10,6 @@ import {
   inArray,
   lt,
   lte,
-  not,
   or,
 } from "drizzle-orm";
 import invariant from "tiny-invariant";
@@ -169,23 +168,6 @@ export class Bookmark implements PrivacyAware {
                     ),
                   )
               : undefined,
-            // Hide bookmarks with upcoming (non-due) reminders
-            input.hideWithUpcomingReminders
-              ? not(
-                  exists(
-                    ctx.db
-                      .select()
-                      .from(bookmarkReminders)
-                      .where(
-                        and(
-                          eq(bookmarkReminders.bookmarkId, bookmarks.id),
-                          eq(bookmarkReminders.status, "active"),
-                          gt(bookmarkReminders.remindAt, new Date()),
-                        ),
-                      ),
-                  ),
-                )
-              : undefined,
           ),
         )
         .limit(input.limit + 1)
@@ -207,6 +189,7 @@ export class Bookmark implements PrivacyAware {
       .leftJoin(bookmarkTexts, eq(bookmarkTexts.id, sq.id))
       .leftJoin(bookmarkAssets, eq(bookmarkAssets.id, sq.id))
       .leftJoin(assets, eq(assets.bookmarkId, sq.id))
+      .leftJoin(bookmarkReminders, eq(bookmarkReminders.bookmarkId, sq.id))
       .orderBy(desc(sq.createdAt), desc(sq.id));
 
     const bookmarksRes = results.reduce<Record<string, ZBookmark>>(
@@ -262,6 +245,7 @@ export class Bookmark implements PrivacyAware {
             content,
             tags: [],
             assets: [],
+            reminder: row.bookmarkReminders || undefined,
           };
         }
 

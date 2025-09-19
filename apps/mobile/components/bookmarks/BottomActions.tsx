@@ -7,6 +7,7 @@ import { ClipboardList, Globe, Info, Tag, Trash2 } from "lucide-react-native";
 
 import { useDeleteBookmark } from "@karakeep/shared-react/hooks/bookmarks";
 import { BookmarkTypes, ZBookmark } from "@karakeep/shared/types/bookmarks";
+import { getReminderType } from "@karakeep/shared/utils/reminderThemeUtils";
 
 import RemindMeButton from "./RemindMeButton";
 
@@ -23,29 +24,7 @@ export default function BottomActions({ bookmark }: BottomActionsProps) {
     bookmarkId: bookmark.id,
   });
 
-  // Helper function to determine reminder type
-  const getReminderType = () => {
-    if (!reminder) return null;
-
-    const now = new Date();
-    const remindAt = new Date(reminder.remindAt);
-
-    if (reminder.status === "dismissed") {
-      return "dismissed";
-    }
-
-    if (reminder.status === "active") {
-      if (remindAt <= now) {
-        return "due";
-      } else {
-        return "upcoming";
-      }
-    }
-
-    return null;
-  };
-
-  const reminderType = getReminderType();
+  const reminderType = getReminderType(reminder);
 
   const { mutate: deleteBookmark, isPending: isDeletionPending } =
     useDeleteBookmark({
