@@ -317,7 +317,7 @@ export default function ReminderCard({
 
         <div className={cn("border-t", theme.dividerBorder)} />
 
-        <div>
+        <div className="flex">
           <ErrorBoundary
             key={bookmark.id}
             fallback={<UnknownCard bookmark={bookmark} />}
@@ -325,7 +325,7 @@ export default function ReminderCard({
             <BookmarkCard
               fixedLayout="list"
               bookmark={bookmark}
-              className="mb-0 border-0 bg-transparent duration-300 ease-in hover:shadow-lg hover:transition-all"
+              className="mb-0 border-0 bg-transparent duration-300 ease-in hover:shadow-lg hover:transition-all w-full"
             />
           </ErrorBoundary>
         </div>

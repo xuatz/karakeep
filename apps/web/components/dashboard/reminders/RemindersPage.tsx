@@ -53,7 +53,6 @@ export default function RemindersPage() {
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Reminders</h1>
-        <p className="text-muted-foreground">Manage your bookmark reminders</p>
       </div>
 
       <Tabs defaultValue="due" className="w-full">
@@ -87,9 +86,6 @@ export default function RemindersPage() {
 
         <TabsContent value="due" className="mt-6">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold text-red-600 dark:text-red-400">
-              Due Reminders
-            </h2>
             <p className="text-sm text-muted-foreground">
               These reminders are past their scheduled time
             </p>
@@ -103,7 +99,6 @@ export default function RemindersPage() {
 
         <TabsContent value="upcoming" className="mt-6">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold">Upcoming Reminders</h2>
             <p className="text-sm text-muted-foreground">
               These reminders are scheduled for the future
             </p>
@@ -117,7 +112,6 @@ export default function RemindersPage() {
 
         <TabsContent value="dismissed" className="mt-6">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold">Dismissed Reminders</h2>
             <p className="text-sm text-muted-foreground">
               These reminders have been marked as complete
             </p>
