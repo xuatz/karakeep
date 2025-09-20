@@ -1,3 +1,4 @@
+import React from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -30,37 +31,15 @@ import {
   getBookmarkRefreshInterval,
   isBookmarkStillTagging,
 } from "@karakeep/shared/utils/bookmarkUtils";
-import { getReminderType } from "@karakeep/shared/utils/reminderThemeUtils";
 
 import { Divider } from "../ui/Divider";
 import { Skeleton } from "../ui/Skeleton";
 import { useToast } from "../ui/Toast";
 import BookmarkAssetImage from "./BookmarkAssetImage";
 import BookmarkTextMarkdown from "./BookmarkTextMarkdown";
-import ReminderBanner from "./ReminderBanner";
-import RemindMeButton from "./RemindMeButton";
 import TagPill from "./TagPill";
 
-const getReminderTheme = (reminderType: string | null) => {
-  switch (reminderType) {
-    case "due":
-      return "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900";
-    case "upcoming":
-      return "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900";
-    case "dismissed":
-      return "bg-gray-50 dark:bg-gray-950/20 border-gray-200 dark:border-gray-700";
-    default:
-      return "bg-card";
-  }
-};
-
-function ActionBar({
-  bookmark,
-  reminderType,
-}: {
-  bookmark: ZBookmark;
-  reminderType?: string | null;
-}) {
+function ActionBar({ bookmark }: { bookmark: ZBookmark }) {
   const { toast } = useToast();
   const { settings } = useAppSettings();
 
@@ -196,9 +175,6 @@ function ActionBar({
         )}
       </Pressable>
 
-      {/* Show RemindMeButton only if there's no reminder or the reminder is not upcoming */}
-      {reminderType !== "upcoming" && <RemindMeButton bookmark={bookmark} />}
-
       <Pressable
         onPress={() => {
           Haptics.selectionAsync();
@@ -299,11 +275,9 @@ function TagList({ bookmark }: { bookmark: ZBookmark }) {
 
 function LinkCard({
   bookmark,
-  reminderType,
   onOpenBookmark,
 }: {
   bookmark: ZBookmark;
-  reminderType?: string | null;
   onOpenBookmark: () => void;
 }) {
   const { settings } = useAppSettings();
@@ -359,7 +333,7 @@ function LinkCard({
         <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
         <View className="mt-2 flex flex-row justify-between px-2 pb-2">
           <Text className="my-auto line-clamp-1">{parsedUrl.host}</Text>
-          <ActionBar bookmark={bookmark} reminderType={reminderType} />
+          <ActionBar bookmark={bookmark} />
         </View>
       </View>
     </View>
@@ -368,11 +342,9 @@ function LinkCard({
 
 function TextCard({
   bookmark,
-  reminderType,
   onOpenBookmark,
 }: {
   bookmark: ZBookmark;
-  reminderType?: string | null;
   onOpenBookmark: () => void;
 }) {
   if (bookmark.content.type !== BookmarkTypes.TEXT) {
@@ -397,7 +369,7 @@ function TextCard({
       <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
       <View className="flex flex-row justify-between p-2">
         <View />
-        <ActionBar bookmark={bookmark} reminderType={reminderType} />
+        <ActionBar bookmark={bookmark} />
       </View>
     </View>
   );
@@ -405,11 +377,9 @@ function TextCard({
 
 function AssetCard({
   bookmark,
-  reminderType,
   onOpenBookmark,
 }: {
   bookmark: ZBookmark;
-  reminderType?: string | null;
   onOpenBookmark: () => void;
 }) {
   if (bookmark.content.type !== BookmarkTypes.ASSET) {
@@ -439,7 +409,7 @@ function AssetCard({
         <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
         <View className="mt-2 flex flex-row justify-between px-2 pb-2">
           <View />
-          <ActionBar bookmark={bookmark} reminderType={reminderType} />
+          <ActionBar bookmark={bookmark} />
         </View>
       </View>
     </View>
@@ -469,16 +439,12 @@ export default function BookmarkCard({
 
   const router = useRouter();
 
-  const reminderType = getReminderType(bookmark.reminder);
-  const cardTheme = getReminderTheme(reminderType);
-
   let comp;
   switch (bookmark.content.type) {
     case BookmarkTypes.LINK:
       comp = (
         <LinkCard
           bookmark={bookmark}
-          reminderType={reminderType}
           onOpenBookmark={() =>
             router.push(`/dashboard/bookmarks/${bookmark.id}`)
           }
@@ -489,7 +455,6 @@ export default function BookmarkCard({
       comp = (
         <TextCard
           bookmark={bookmark}
-          reminderType={reminderType}
           onOpenBookmark={() =>
             router.push(`/dashboard/bookmarks/${bookmark.id}`)
           }
@@ -500,7 +465,6 @@ export default function BookmarkCard({
       comp = (
         <AssetCard
           bookmark={bookmark}
-          reminderType={reminderType}
           onOpenBookmark={() =>
             router.push(`/dashboard/bookmarks/${bookmark.id}`)
           }
@@ -509,15 +473,5 @@ export default function BookmarkCard({
       break;
   }
 
-  return (
-    <View className={`overflow-hidden rounded-xl border ${cardTheme}`}>
-      {bookmark.reminder && reminderType && (
-        <ReminderBanner
-          reminder={bookmark.reminder}
-          reminderType={reminderType as "due" | "upcoming" | "dismissed"}
-        />
-      )}
-      {comp}
-    </View>
-  );
+  return <View className="overflow-hidden rounded-xl bg-card">{comp}</View>;
 }

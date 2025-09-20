@@ -2,14 +2,10 @@ import { Alert, Linking, Pressable, View } from "react-native";
 import { useRouter } from "expo-router";
 import { TailwindResolver } from "@/components/TailwindResolver";
 import { useToast } from "@/components/ui/Toast";
-import { api } from "@/lib/trpc";
 import { ClipboardList, Globe, Info, Tag, Trash2 } from "lucide-react-native";
 
 import { useDeleteBookmark } from "@karakeep/shared-react/hooks/bookmarks";
 import { BookmarkTypes, ZBookmark } from "@karakeep/shared/types/bookmarks";
-import { getReminderType } from "@karakeep/shared/utils/reminderThemeUtils";
-
-import RemindMeButton from "./RemindMeButton";
 
 interface BottomActionsProps {
   bookmark: ZBookmark;
@@ -18,13 +14,6 @@ interface BottomActionsProps {
 export default function BottomActions({ bookmark }: BottomActionsProps) {
   const { toast } = useToast();
   const router = useRouter();
-
-  // Fetch reminder data for this bookmark
-  const { data: reminder } = api.reminders.getBookmarkReminder.useQuery({
-    bookmarkId: bookmark.id,
-  });
-
-  const reminderType = getReminderType(reminder);
 
   const { mutate: deleteBookmark, isPending: isDeletionPending } =
     useDeleteBookmark({
@@ -59,13 +48,6 @@ export default function BottomActions({ bookmark }: BottomActionsProps) {
     );
 
   const actions = [
-    {
-      id: "remind",
-      icon: <RemindMeButton bookmark={bookmark} />,
-      shouldRender: reminderType !== "upcoming",
-      onClick: () => undefined, // RemindMeButton handles its own onClick
-      disabled: false,
-    },
     {
       id: "lists",
       icon: (
