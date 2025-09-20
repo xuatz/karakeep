@@ -44,11 +44,11 @@ import TagPill from "./TagPill";
 
 function ActionBar({
   bookmark,
-  _reminder,
+  reminder,
   reminderType,
 }: {
   bookmark: ZBookmark;
-  _reminder?: ZReminder | null;
+  reminder?: ZReminder | null;
   reminderType?: string | null;
 }) {
   const { toast } = useToast();
@@ -290,12 +290,12 @@ function TagList({ bookmark }: { bookmark: ZBookmark }) {
 function LinkCard({
   bookmark,
   onOpenBookmark,
-  _reminder,
+  reminder,
   reminderType,
 }: {
   bookmark: ZBookmark;
   onOpenBookmark: () => void;
-  _reminder?: ZReminder | null;
+  reminder?: ZReminder | null;
   reminderType?: string | null;
 }) {
   const { settings } = useAppSettings();
@@ -365,12 +365,12 @@ function LinkCard({
 function TextCard({
   bookmark,
   onOpenBookmark,
-  _reminder,
+  reminder,
   reminderType,
 }: {
   bookmark: ZBookmark;
   onOpenBookmark: () => void;
-  _reminder?: ZReminder | null;
+  reminder?: ZReminder | null;
   reminderType?: string | null;
 }) {
   if (bookmark.content.type !== BookmarkTypes.TEXT) {
@@ -408,12 +408,12 @@ function TextCard({
 function AssetCard({
   bookmark,
   onOpenBookmark,
-  _reminder,
+  reminder,
   reminderType,
 }: {
   bookmark: ZBookmark;
   onOpenBookmark: () => void;
-  _reminder?: ZReminder | null;
+  reminder?: ZReminder | null;
   reminderType?: string | null;
 }) {
   if (bookmark.content.type !== BookmarkTypes.ASSET) {
