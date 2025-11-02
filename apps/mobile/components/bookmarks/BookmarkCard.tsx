@@ -37,6 +37,8 @@ import { Skeleton } from "../ui/Skeleton";
 import { useToast } from "../ui/Toast";
 import BookmarkAssetImage from "./BookmarkAssetImage";
 import BookmarkTextMarkdown from "./BookmarkTextMarkdown";
+import { NoteModal } from "./NoteModal";
+import { NotePreview } from "./NotePreview";
 import TagPill from "./TagPill";
 
 function ActionBar({ bookmark }: { bookmark: ZBookmark }) {
@@ -280,6 +282,7 @@ function LinkCard({
   bookmark: ZBookmark;
   onOpenBookmark: () => void;
 }) {
+  const [isNoteModalVisible, setIsNoteModalVisible] = React.useState(false);
   const { settings } = useAppSettings();
   if (bookmark.content.type !== BookmarkTypes.LINK) {
     throw new Error("Wrong content type rendered");
@@ -320,23 +323,39 @@ function LinkCard({
   }
 
   return (
-    <View className="flex gap-2">
-      <Pressable onPress={onOpenBookmark}>{imageComp}</Pressable>
-      <View className="flex gap-2 p-2">
-        <Text
-          className="line-clamp-2 text-xl font-bold text-foreground"
-          onPress={onOpenBookmark}
-        >
-          {bookmark.title ?? bookmark.content.title ?? parsedUrl.host}
-        </Text>
-        <TagList bookmark={bookmark} />
-        <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
-        <View className="mt-2 flex flex-row justify-between px-2 pb-2">
-          <Text className="my-auto line-clamp-1">{parsedUrl.host}</Text>
-          <ActionBar bookmark={bookmark} />
+    <>
+      {bookmark.note && (
+        <NoteModal
+          note={bookmark.note}
+          bookmarkId={bookmark.id}
+          visible={isNoteModalVisible}
+          onClose={() => setIsNoteModalVisible(false)}
+        />
+      )}
+      <View className="flex gap-2">
+        <Pressable onPress={onOpenBookmark}>{imageComp}</Pressable>
+        <View className="flex gap-2 p-2">
+          <Text
+            className="line-clamp-2 text-xl font-bold text-foreground"
+            onPress={onOpenBookmark}
+          >
+            {bookmark.title ?? bookmark.content.title ?? parsedUrl.host}
+          </Text>
+          {bookmark.note && (
+            <NotePreview
+              note={bookmark.note}
+              onPress={() => setIsNoteModalVisible(true)}
+            />
+          )}
+          <TagList bookmark={bookmark} />
+          <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
+          <View className="mt-2 flex flex-row justify-between px-2 pb-2">
+            <Text className="my-auto line-clamp-1">{parsedUrl.host}</Text>
+            <ActionBar bookmark={bookmark} />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -347,31 +366,48 @@ function TextCard({
   bookmark: ZBookmark;
   onOpenBookmark: () => void;
 }) {
+  const [isNoteModalVisible, setIsNoteModalVisible] = React.useState(false);
   if (bookmark.content.type !== BookmarkTypes.TEXT) {
     throw new Error("Wrong content type rendered");
   }
   const content = bookmark.content.text;
   return (
-    <View className="flex max-h-96 gap-2 p-2">
-      <Pressable onPress={onOpenBookmark}>
-        {bookmark.title && (
-          <Text className="line-clamp-2 text-xl font-bold">
-            {bookmark.title}
-          </Text>
-        )}
-      </Pressable>
-      <View className="max-h-56 overflow-hidden p-2 text-foreground">
+    <>
+      {bookmark.note && (
+        <NoteModal
+          note={bookmark.note}
+          bookmarkId={bookmark.id}
+          visible={isNoteModalVisible}
+          onClose={() => setIsNoteModalVisible(false)}
+        />
+      )}
+      <View className="flex max-h-96 gap-2 p-2">
         <Pressable onPress={onOpenBookmark}>
-          <BookmarkTextMarkdown text={content} />
+          {bookmark.title && (
+            <Text className="line-clamp-2 text-xl font-bold">
+              {bookmark.title}
+            </Text>
+          )}
         </Pressable>
+        <View className="max-h-56 overflow-hidden p-2 text-foreground">
+          <Pressable onPress={onOpenBookmark}>
+            <BookmarkTextMarkdown text={content} />
+          </Pressable>
+        </View>
+        {bookmark.note && (
+          <NotePreview
+            note={bookmark.note}
+            onPress={() => setIsNoteModalVisible(true)}
+          />
+        )}
+        <TagList bookmark={bookmark} />
+        <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
+        <View className="flex flex-row justify-between p-2">
+          <View />
+          <ActionBar bookmark={bookmark} />
+        </View>
       </View>
-      <TagList bookmark={bookmark} />
-      <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
-      <View className="flex flex-row justify-between p-2">
-        <View />
-        <ActionBar bookmark={bookmark} />
-      </View>
-    </View>
+    </>
   );
 }
 
@@ -382,6 +418,7 @@ function AssetCard({
   bookmark: ZBookmark;
   onOpenBookmark: () => void;
 }) {
+  const [isNoteModalVisible, setIsNoteModalVisible] = React.useState(false);
   if (bookmark.content.type !== BookmarkTypes.ASSET) {
     throw new Error("Wrong content type rendered");
   }
@@ -392,27 +429,43 @@ function AssetCard({
     bookmark.content.assetId;
 
   return (
-    <View className="flex gap-2">
-      <Pressable onPress={onOpenBookmark}>
-        <BookmarkAssetImage
-          assetId={assetImage}
-          className="h-56 min-h-56 w-full object-cover"
+    <>
+      {bookmark.note && (
+        <NoteModal
+          note={bookmark.note}
+          bookmarkId={bookmark.id}
+          visible={isNoteModalVisible}
+          onClose={() => setIsNoteModalVisible(false)}
         />
-      </Pressable>
-      <View className="flex gap-2 p-2">
+      )}
+      <View className="flex gap-2">
         <Pressable onPress={onOpenBookmark}>
-          {title && (
-            <Text className="line-clamp-2 text-xl font-bold">{title}</Text>
-          )}
+          <BookmarkAssetImage
+            assetId={assetImage}
+            className="h-56 min-h-56 w-full object-cover"
+          />
         </Pressable>
-        <TagList bookmark={bookmark} />
-        <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
-        <View className="mt-2 flex flex-row justify-between px-2 pb-2">
-          <View />
-          <ActionBar bookmark={bookmark} />
+        <View className="flex gap-2 p-2">
+          <Pressable onPress={onOpenBookmark}>
+            {title && (
+              <Text className="line-clamp-2 text-xl font-bold">{title}</Text>
+            )}
+          </Pressable>
+          {bookmark.note && (
+            <NotePreview
+              note={bookmark.note}
+              onPress={() => setIsNoteModalVisible(true)}
+            />
+          )}
+          <TagList bookmark={bookmark} />
+          <Divider orientation="vertical" className="mt-2 h-0.5 w-full" />
+          <View className="mt-2 flex flex-row justify-between px-2 pb-2">
+            <View />
+            <ActionBar bookmark={bookmark} />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 }
 
