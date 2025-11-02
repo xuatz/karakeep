@@ -29,24 +29,17 @@ export function NotePreview({ note, bookmarkId, className }: NotePreviewProps) {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="none"
-          className="h-auto w-full justify-start text-left hover:bg-transparent"
-          onClick={() => setIsOpen(true)}
+        <div
+          className={cn(
+            "flex cursor-pointer items-center gap-1.5 text-sm font-light italic text-gray-500 dark:text-gray-400",
+            className,
+          )}
         >
-          <div
-            className={cn(
-              "flex cursor-pointer items-center gap-1.5 text-sm italic text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300",
-              className,
-            )}
-          >
-            <NotepadText className="size-5 shrink-0" />
-            <div className="line-clamp-2 min-w-0 flex-1 overflow-hidden text-wrap break-words">
-              {note}
-            </div>
+          <NotepadText className="size-5 shrink-0" />
+          <div className="line-clamp-2 min-w-0 flex-1 overflow-hidden text-wrap break-words">
+            {note}
           </div>
-        </Button>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-96 max-w-[calc(100vw-2rem)]" align="start">
         <div className="space-y-3">
@@ -62,7 +55,7 @@ export function NotePreview({ note, bookmarkId, className }: NotePreviewProps) {
                 onClick={() => setIsOpen(false)}
               >
                 {t("actions.edit_notes")}
-                <ExternalLink className="size-3" />
+                <ExternalLink className="size-4" />
               </Button>
             </Link>
           </div>
