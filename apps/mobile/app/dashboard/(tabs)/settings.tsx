@@ -87,11 +87,8 @@ export default function Dashboard() {
             </Pressable>
           </Link>
         </View>
-        <Text className="w-full p-1 text-2xl font-bold text-foreground">
-          Display Settings
-        </Text>
         <View className="flex w-full flex-row items-center justify-between gap-8 rounded-lg bg-card px-4 py-2">
-          <Text>Show Note Previews</Text>
+          <Text>Show note preview in bookmark</Text>
           <Switch
             value={settings.showNotes}
             onValueChange={(value) =>
