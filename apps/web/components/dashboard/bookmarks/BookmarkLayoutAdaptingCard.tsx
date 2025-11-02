@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import useBulkActionsStore from "@/lib/bulkActions";
 import {
   bookmarkLayoutSwitch,
@@ -22,7 +21,6 @@ import { isBookmarkStillTagging } from "@karakeep/shared/utils/bookmarkUtils";
 
 import BookmarkActionBar from "./BookmarkActionBar";
 import BookmarkFormattedCreatedAt from "./BookmarkFormattedCreatedAt";
-import { NotePopover } from "./NotePopover";
 import { NotePreview } from "./NotePreview";
 import TagList from "./TagList";
 
@@ -120,7 +118,6 @@ function ListView({
   className,
 }: Props) {
   const { showNotes } = useBookmarkDisplaySettings();
-  const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
   const note = showNotes ? bookmark.note?.trim() : undefined;
 
   return (
@@ -142,25 +139,7 @@ function ListView({
             </div>
           )}
           {content && <div className="shrink-1 overflow-hidden">{content}</div>}
-          {note && (
-            <NotePopover
-              note={note}
-              bookmarkId={bookmark.id}
-              open={isNotePopoverOpen}
-              onOpenChange={setIsNotePopoverOpen}
-            >
-              <Button
-                variant="ghost"
-                size="none"
-                className="h-auto w-full justify-start text-left hover:bg-transparent"
-                onClick={() => {
-                  setIsNotePopoverOpen(true);
-                }}
-              >
-                <NotePreview note={note} />
-              </Button>
-            </NotePopover>
-          )}
+          {note && <NotePreview note={note} bookmarkId={bookmark.id} />}
           <div className="flex shrink-0 flex-wrap gap-1 overflow-hidden">
             <TagList
               bookmark={bookmark}
@@ -186,7 +165,6 @@ function GridView({
   fitHeight = false,
 }: Props & { layout: BookmarksLayoutTypes }) {
   const { showNotes } = useBookmarkDisplaySettings();
-  const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
   const note = showNotes ? bookmark.note?.trim() : undefined;
   const img = image("grid", "h-52 min-h-52 w-full object-cover rounded-t-lg");
 
@@ -208,25 +186,7 @@ function GridView({
             </div>
           )}
           {content && <div className="shrink-1 overflow-hidden">{content}</div>}
-          {note && (
-            <NotePopover
-              note={note}
-              bookmarkId={bookmark.id}
-              open={isNotePopoverOpen}
-              onOpenChange={setIsNotePopoverOpen}
-            >
-              <Button
-                variant="ghost"
-                size="none"
-                className="h-auto w-full justify-start text-left hover:bg-transparent"
-                onClick={() => {
-                  setIsNotePopoverOpen(true);
-                }}
-              >
-                <NotePreview note={note} />
-              </Button>
-            </NotePopover>
-          )}
+          {note && <NotePreview note={note} bookmarkId={bookmark.id} />}
           <div className="flex shrink-0 flex-wrap gap-1 overflow-hidden">
             <TagList
               className={wrapTags ? undefined : "h-full"}
