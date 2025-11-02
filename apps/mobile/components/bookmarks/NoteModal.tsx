@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 import { router } from "expo-router";
 import { ExternalLink, X } from "lucide-react-native";
