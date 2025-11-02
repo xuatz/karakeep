@@ -288,6 +288,7 @@ function LinkCard({
     throw new Error("Wrong content type rendered");
   }
 
+  const note = bookmark.note?.trim();
   const url = bookmark.content.url;
   const parsedUrl = new URL(url);
 
@@ -324,9 +325,9 @@ function LinkCard({
 
   return (
     <>
-      {bookmark.note && (
+      {note && (
         <NoteModal
-          note={bookmark.note}
+          note={note}
           bookmarkId={bookmark.id}
           visible={isNoteModalVisible}
           onClose={() => setIsNoteModalVisible(false)}
@@ -341,9 +342,9 @@ function LinkCard({
           >
             {bookmark.title ?? bookmark.content.title ?? parsedUrl.host}
           </Text>
-          {bookmark.note && (
+          {note && (
             <NotePreview
-              note={bookmark.note}
+              note={note}
               onPress={() => setIsNoteModalVisible(true)}
             />
           )}
@@ -370,12 +371,13 @@ function TextCard({
   if (bookmark.content.type !== BookmarkTypes.TEXT) {
     throw new Error("Wrong content type rendered");
   }
+  const note = bookmark.note?.trim();
   const content = bookmark.content.text;
   return (
     <>
-      {bookmark.note && (
+      {note && (
         <NoteModal
-          note={bookmark.note}
+          note={note}
           bookmarkId={bookmark.id}
           visible={isNoteModalVisible}
           onClose={() => setIsNoteModalVisible(false)}
@@ -394,9 +396,9 @@ function TextCard({
             <BookmarkTextMarkdown text={content} />
           </Pressable>
         </View>
-        {bookmark.note && (
+        {note && (
           <NotePreview
-            note={bookmark.note}
+            note={note}
             onPress={() => setIsNoteModalVisible(true)}
           />
         )}
@@ -422,6 +424,7 @@ function AssetCard({
   if (bookmark.content.type !== BookmarkTypes.ASSET) {
     throw new Error("Wrong content type rendered");
   }
+  const note = bookmark.note?.trim();
   const title = bookmark.title ?? bookmark.content.fileName;
 
   const assetImage =
@@ -430,9 +433,9 @@ function AssetCard({
 
   return (
     <>
-      {bookmark.note && (
+      {note && (
         <NoteModal
-          note={bookmark.note}
+          note={note}
           bookmarkId={bookmark.id}
           visible={isNoteModalVisible}
           onClose={() => setIsNoteModalVisible(false)}
@@ -451,9 +454,9 @@ function AssetCard({
               <Text className="line-clamp-2 text-xl font-bold">{title}</Text>
             )}
           </Pressable>
-          {bookmark.note && (
+          {note && (
             <NotePreview
-              note={bookmark.note}
+              note={note}
               onPress={() => setIsNoteModalVisible(true)}
             />
           )}

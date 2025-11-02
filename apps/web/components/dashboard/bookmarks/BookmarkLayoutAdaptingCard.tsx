@@ -119,6 +119,7 @@ function ListView({
   className,
 }: Props) {
   const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
+  const note = bookmark.note?.trim();
 
   return (
     <div
@@ -139,9 +140,9 @@ function ListView({
             </div>
           )}
           {content && <div className="shrink-1 overflow-hidden">{content}</div>}
-          {bookmark.note && (
+          {note && (
             <NotePopover
-              note={bookmark.note}
+              note={note}
               bookmarkId={bookmark.id}
               open={isNotePopoverOpen}
               onOpenChange={setIsNotePopoverOpen}
@@ -154,7 +155,7 @@ function ListView({
                   setIsNotePopoverOpen(true);
                 }}
               >
-                <NotePreview note={bookmark.note} />
+                <NotePreview note={note} />
               </Button>
             </NotePopover>
           )}
@@ -183,6 +184,7 @@ function GridView({
   fitHeight = false,
 }: Props & { layout: BookmarksLayoutTypes }) {
   const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
+  const note = bookmark.note?.trim();
   const img = image("grid", "h-52 min-h-52 w-full object-cover rounded-t-lg");
 
   return (
@@ -203,9 +205,9 @@ function GridView({
             </div>
           )}
           {content && <div className="shrink-1 overflow-hidden">{content}</div>}
-          {bookmark.note && (
+          {note && (
             <NotePopover
-              note={bookmark.note}
+              note={note}
               bookmarkId={bookmark.id}
               open={isNotePopoverOpen}
               onOpenChange={setIsNotePopoverOpen}
@@ -218,7 +220,7 @@ function GridView({
                   setIsNotePopoverOpen(true);
                 }}
               >
-                <NotePreview note={bookmark.note} />
+                <NotePreview note={note} />
               </Button>
             </NotePopover>
           )}
