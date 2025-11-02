@@ -14,7 +14,7 @@ export const UserLocalSettingsCtx = createContext<
   bookmarkGridLayout: defaultLayout,
   lang: fallbackLng,
   gridColumns: 3,
-  showNotes: true,
+  showNotes: false,
 });
 
 function useUserLocalSettings() {

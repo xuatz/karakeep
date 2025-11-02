@@ -14,7 +14,7 @@ const zSettingsSchema = z.object({
     .enum(["reader", "browser"])
     .optional()
     .default("reader"),
-  showNotes: z.boolean().optional().default(true),
+  showNotes: z.boolean().optional().default(false),
 });
 
 export type Settings = z.infer<typeof zSettingsSchema>;
@@ -33,7 +33,7 @@ const useSettings = create<AppSettingsState>((set, get) => ({
       imageQuality: 0.2,
       theme: "system",
       defaultBookmarkView: "reader",
-      showNotes: true,
+      showNotes: false,
     },
   },
   setSettings: async (settings) => {
