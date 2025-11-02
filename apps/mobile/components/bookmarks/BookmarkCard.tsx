@@ -288,7 +288,7 @@ function LinkCard({
     throw new Error("Wrong content type rendered");
   }
 
-  const note = bookmark.note?.trim();
+  const note = settings.showNotes ? bookmark.note?.trim() : undefined;
   const url = bookmark.content.url;
   const parsedUrl = new URL(url);
 
@@ -368,10 +368,11 @@ function TextCard({
   onOpenBookmark: () => void;
 }) {
   const [isNoteModalVisible, setIsNoteModalVisible] = React.useState(false);
+  const { settings } = useAppSettings();
   if (bookmark.content.type !== BookmarkTypes.TEXT) {
     throw new Error("Wrong content type rendered");
   }
-  const note = bookmark.note?.trim();
+  const note = settings.showNotes ? bookmark.note?.trim() : undefined;
   const content = bookmark.content.text;
   return (
     <>
@@ -421,10 +422,11 @@ function AssetCard({
   onOpenBookmark: () => void;
 }) {
   const [isNoteModalVisible, setIsNoteModalVisible] = React.useState(false);
+  const { settings } = useAppSettings();
   if (bookmark.content.type !== BookmarkTypes.ASSET) {
     throw new Error("Wrong content type rendered");
   }
-  const note = bookmark.note?.trim();
+  const note = settings.showNotes ? bookmark.note?.trim() : undefined;
   const title = bookmark.title ?? bookmark.content.fileName;
 
   const assetImage =

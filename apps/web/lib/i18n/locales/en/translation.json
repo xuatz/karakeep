@@ -47,6 +47,13 @@
     "list": "List",
     "compact": "Compact"
   },
+  "view_options": {
+    "title": "View Options",
+    "layout": "Layout",
+    "columns": "Columns",
+    "display_options": "Display Options",
+    "show_note_previews": "Show Notes"
+  },
   "actions": {
     "change_layout": "Change Layout",
     "archive": "Archive",

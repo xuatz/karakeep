@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import useBulkActionsStore from "@/lib/bulkActions";
 import {
   bookmarkLayoutSwitch,
+  useBookmarkDisplaySettings,
   useBookmarkLayout,
 } from "@/lib/userLocalSettings/bookmarksLayout";
 import { cn } from "@/lib/utils";
@@ -118,8 +119,9 @@ function ListView({
   footer,
   className,
 }: Props) {
+  const { showNotes } = useBookmarkDisplaySettings();
   const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
-  const note = bookmark.note?.trim();
+  const note = showNotes ? bookmark.note?.trim() : undefined;
 
   return (
     <div
@@ -183,8 +185,9 @@ function GridView({
   layout,
   fitHeight = false,
 }: Props & { layout: BookmarksLayoutTypes }) {
+  const { showNotes } = useBookmarkDisplaySettings();
   const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
-  const note = bookmark.note?.trim();
+  const note = showNotes ? bookmark.note?.trim() : undefined;
   const img = image("grid", "h-52 min-h-52 w-full object-cover rounded-t-lg");
 
   return (
