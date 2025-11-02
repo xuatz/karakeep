@@ -1,7 +1,11 @@
+"use client";
+
 import type { BookmarksLayoutTypes } from "@/lib/userLocalSettings/types";
-import React, { useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import useBulkActionsStore from "@/lib/bulkActions";
 import {
   bookmarkLayoutSwitch,
@@ -17,14 +21,16 @@ import { isBookmarkStillTagging } from "@karakeep/shared/utils/bookmarkUtils";
 
 import BookmarkActionBar from "./BookmarkActionBar";
 import BookmarkFormattedCreatedAt from "./BookmarkFormattedCreatedAt";
+import { NotePopover } from "./NotePopover";
+import { NotePreview } from "./NotePreview";
 import TagList from "./TagList";
 
 interface Props {
   bookmark: ZBookmark;
-  image: (layout: BookmarksLayoutTypes, className: string) => React.ReactNode;
-  title?: React.ReactNode;
-  content?: React.ReactNode;
-  footer?: React.ReactNode;
+  image: (layout: BookmarksLayoutTypes, className: string) => ReactNode;
+  title?: ReactNode;
+  content?: ReactNode;
+  footer?: ReactNode;
   className?: string;
   fitHeight?: boolean;
   wrapTags: boolean;
@@ -34,7 +40,7 @@ function BottomRow({
   footer,
   bookmark,
 }: {
-  footer?: React.ReactNode;
+  footer?: ReactNode;
   bookmark: ZBookmark;
 }) {
   return (
@@ -112,6 +118,8 @@ function ListView({
   footer,
   className,
 }: Props) {
+  const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
+
   return (
     <div
       className={cn(
@@ -131,6 +139,25 @@ function ListView({
             </div>
           )}
           {content && <div className="shrink-1 overflow-hidden">{content}</div>}
+          {bookmark.note && (
+            <NotePopover
+              note={bookmark.note}
+              bookmarkId={bookmark.id}
+              open={isNotePopoverOpen}
+              onOpenChange={setIsNotePopoverOpen}
+            >
+              <Button
+                variant="ghost"
+                size="none"
+                className="h-auto w-full justify-start text-left hover:bg-transparent"
+                onClick={() => {
+                  setIsNotePopoverOpen(true);
+                }}
+              >
+                <NotePreview note={bookmark.note} />
+              </Button>
+            </NotePopover>
+          )}
           <div className="flex shrink-0 flex-wrap gap-1 overflow-hidden">
             <TagList
               bookmark={bookmark}
@@ -155,7 +182,8 @@ function GridView({
   layout,
   fitHeight = false,
 }: Props & { layout: BookmarksLayoutTypes }) {
-  const img = image("grid", "h-56 min-h-56 w-full object-cover rounded-t-lg");
+  const [isNotePopoverOpen, setIsNotePopoverOpen] = useState(false);
+  const img = image("grid", "h-52 min-h-52 w-full object-cover rounded-t-lg");
 
   return (
     <div
@@ -166,7 +194,7 @@ function GridView({
       )}
     >
       <MultiBookmarkSelector bookmark={bookmark} />
-      {img && <div className="h-56 w-full shrink-0 overflow-hidden">{img}</div>}
+      {img && <div className="h-52 w-full shrink-0 overflow-hidden">{img}</div>}
       <div className="flex h-full flex-col justify-between gap-2 overflow-hidden p-2">
         <div className="grow-1 flex flex-col gap-2 overflow-hidden">
           {title && (
@@ -175,6 +203,25 @@ function GridView({
             </div>
           )}
           {content && <div className="shrink-1 overflow-hidden">{content}</div>}
+          {bookmark.note && (
+            <NotePopover
+              note={bookmark.note}
+              bookmarkId={bookmark.id}
+              open={isNotePopoverOpen}
+              onOpenChange={setIsNotePopoverOpen}
+            >
+              <Button
+                variant="ghost"
+                size="none"
+                className="h-auto w-full justify-start text-left hover:bg-transparent"
+                onClick={() => {
+                  setIsNotePopoverOpen(true);
+                }}
+              >
+                <NotePreview note={bookmark.note} />
+              </Button>
+            </NotePopover>
+          )}
           <div className="flex shrink-0 flex-wrap gap-1 overflow-hidden">
             <TagList
               className={wrapTags ? undefined : "h-full"}
