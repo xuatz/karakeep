@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useRouter } from "expo-router";
 import { Stack } from "expo-router/stack";
-import { ShareIntentProvider, useShareIntent } from "expo-share-intent";
+import { ShareIntentProvider } from "expo-share-intent";
 import { StatusBar } from "expo-status-bar";
 import { StyledStack } from "@/components/navigation/stack";
 import { Providers } from "@/lib/providers";
@@ -14,6 +14,7 @@ import { useColorScheme, useInitialAndroidBarSync } from "@/lib/useColorScheme";
 import { cn } from "@/lib/utils";
 import { NAV_THEME } from "@/theme";
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
+import { useShareIntent } from "@/lib/shareIntent";
 
 export default function RootLayout() {
   useInitialAndroidBarSync();

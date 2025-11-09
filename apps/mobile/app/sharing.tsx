@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useShareIntentContext } from "expo-share-intent";
+import { useShareIntent } from "@/lib/shareIntent";
 import { Button } from "@/components/ui/Button";
 import { Text } from "@/components/ui/Text";
 import useAppSettings from "@/lib/settings";
@@ -19,7 +19,7 @@ type Mode =
 
 function SaveBookmark({ setMode }: { setMode: (mode: Mode) => void }) {
   const { hasShareIntent, shareIntent, resetShareIntent } =
-    useShareIntentContext();
+    useShareIntent();
   const { settings, isLoading } = useAppSettings();
 
   const onSaved = (d: ZBookmark & { alreadyExists: boolean }) => {
@@ -41,10 +41,15 @@ function SaveBookmark({ setMode }: { setMode: (mode: Mode) => void }) {
       resetShareIntent();
     }
   };
-
+  
   const { uploadAsset } = useUploadAsset(settings, {
     onSuccess: onSaved,
-    onError,
+    onError: () => {
+      setMode({ type: "error" });
+      if (hasShareIntent) {
+        resetShareIntent();
+      }
+    },
   });
 
   const invalidateAllBookmarks =
@@ -57,6 +62,15 @@ function SaveBookmark({ setMode }: { setMode: (mode: Mode) => void }) {
 
   useEffect(() => {
     if (isLoading) {
+      return;
+    }
+
+    // Validate share intent data exists before processing
+    const hasData =
+      shareIntent.webUrl ||
+      shareIntent?.text ||
+      (shareIntent?.files && shareIntent.files.length > 0);
+    if (!hasData) {
       return;
     }
 

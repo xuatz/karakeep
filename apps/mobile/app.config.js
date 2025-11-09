@@ -65,6 +65,7 @@ export default {
     plugins: [
       "./plugins/trust-local-certs.js",
       "./plugins/camera-not-required.js",
+      "./plugins/android-share-intent.js",
       "expo-router",
       [
         "expo-share-intent",
@@ -79,7 +80,7 @@ export default {
             NSExtensionActivationRule:
               'SUBQUERY (extensionItems, $extensionItem, SUBQUERY ($extensionItem.attachments, $attachment, SUBQUERY ($attachment.registeredTypeIdentifiers, $uti, $uti UTI-CONFORMS-TO "com.adobe.pdf" || $uti UTI-CONFORMS-TO "public.image" || $uti UTI-CONFORMS-TO "public.url" || $uti UTI-CONFORMS-TO "public.plain-text").@count >= 1).@count >= 1).@count >= 1',
           },
-          androidIntentFilters: ["text/*", "image/*", "application/pdf"],
+          androidIntentFilters: [],
         },
       ],
       "expo-secure-store",
