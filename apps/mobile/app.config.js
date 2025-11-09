@@ -1,6 +1,8 @@
+const IS_DEV = process.env.APP_VARIANT === "development";
+
 export default {
   expo: {
-    name: "Karakeep",
+    name: IS_DEV ? "Karakeep Dev" : "Karakeep",
     slug: "hoarder",
     scheme: "karakeep",
     version: "1.8.1",
@@ -16,7 +18,9 @@ export default {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "app.hoarder.hoardermobile",
+      bundleIdentifier: IS_DEV
+        ? "app.hoarder.hoardermobile.dev"
+        : "app.hoarder.hoardermobile",
       splash: {
         image: "./assets/splash.png",
         resizeMode: "contain",
@@ -53,12 +57,15 @@ export default {
           backgroundColor: "#000000",
         },
       },
-      package: "app.hoarder.hoardermobile",
+      package: IS_DEV
+        ? "app.hoarder.hoardermobile.dev"
+        : "app.hoarder.hoardermobile",
       versionCode: 26,
     },
     plugins: [
       "./plugins/trust-local-certs.js",
       "./plugins/camera-not-required.js",
+      "./plugins/android-share-intent.js",
       "expo-router",
       [
         "expo-share-intent",
@@ -73,7 +80,7 @@ export default {
             NSExtensionActivationRule:
               'SUBQUERY (extensionItems, $extensionItem, SUBQUERY ($extensionItem.attachments, $attachment, SUBQUERY ($attachment.registeredTypeIdentifiers, $uti, $uti UTI-CONFORMS-TO "com.adobe.pdf" || $uti UTI-CONFORMS-TO "public.image" || $uti UTI-CONFORMS-TO "public.url" || $uti UTI-CONFORMS-TO "public.plain-text").@count >= 1).@count >= 1).@count >= 1',
           },
-          androidIntentFilters: ["text/*", "image/*", "application/pdf"],
+          androidIntentFilters: [],
         },
       ],
       "expo-secure-store",

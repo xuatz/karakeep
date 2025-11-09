@@ -35,5 +35,9 @@ yarn-error.*
 *.tsbuildinfo
 
 #build files
-ios/
-android/
+/ios/
+/android/
+
+# But allow module source files
+!/modules/**/android/
+!/modules/**/ios/
