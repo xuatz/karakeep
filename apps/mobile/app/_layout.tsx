@@ -10,11 +10,11 @@ import { ShareIntentProvider } from "expo-share-intent";
 import { StatusBar } from "expo-status-bar";
 import { StyledStack } from "@/components/navigation/stack";
 import { Providers } from "@/lib/providers";
+import { useShareIntent } from "@/lib/shareIntent";
 import { useColorScheme, useInitialAndroidBarSync } from "@/lib/useColorScheme";
 import { cn } from "@/lib/utils";
 import { NAV_THEME } from "@/theme";
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
-import { useShareIntent } from "@/lib/shareIntent";
 
 export default function RootLayout() {
   useInitialAndroidBarSync();

@@ -19,17 +19,17 @@ function withShareIntentManifest(config) {
     const androidManifest = config.modResults;
     const mainApplication =
       AndroidConfig.Manifest.getMainApplicationOrThrow(androidManifest);
-    
+
     // Find the main activity
     const mainActivity = mainApplication.activity?.find(
       (activity) =>
         activity.$?.["android:name"] === ".MainActivity" ||
-        activity["intent-filter"]?.some(
-          (filter) =>
-            filter.action?.some(
-              (action) => action.$?.["android:name"] === "android.intent.action.MAIN"
-            )
-        )
+        activity["intent-filter"]?.some((filter) =>
+          filter.action?.some(
+            (action) =>
+              action.$?.["android:name"] === "android.intent.action.MAIN",
+          ),
+        ),
     );
 
     if (!mainActivity) {
@@ -123,29 +123,32 @@ function withShareIntentManifest(config) {
     const hasTextFilter = mainActivity["intent-filter"].some(
       (filter) =>
         filter.action?.some(
-          (action) => action.$?.["android:name"] === "android.intent.action.SEND"
+          (action) =>
+            action.$?.["android:name"] === "android.intent.action.SEND",
         ) &&
         filter.data?.some(
-          (data) => data.$?.["android:mimeType"] === "text/plain"
-        )
+          (data) => data.$?.["android:mimeType"] === "text/plain",
+        ),
     );
 
     const hasImageFilter = mainActivity["intent-filter"].some(
       (filter) =>
         filter.action?.some(
-          (action) => action.$?.["android:name"] === "android.intent.action.SEND"
+          (action) =>
+            action.$?.["android:name"] === "android.intent.action.SEND",
         ) &&
-        filter.data?.some((data) => data.$?.["android:mimeType"] === "image/*")
+        filter.data?.some((data) => data.$?.["android:mimeType"] === "image/*"),
     );
 
     const hasPdfFilter = mainActivity["intent-filter"].some(
       (filter) =>
         filter.action?.some(
-          (action) => action.$?.["android:name"] === "android.intent.action.SEND"
+          (action) =>
+            action.$?.["android:name"] === "android.intent.action.SEND",
         ) &&
         filter.data?.some(
-          (data) => data.$?.["android:mimeType"] === "application/pdf"
-        )
+          (data) => data.$?.["android:mimeType"] === "application/pdf",
+        ),
     );
 
     if (!hasTextFilter) {
@@ -182,7 +185,7 @@ function withCustomMainActivity(config) {
           `package app.hoarder.hoardermobile;
 
 import android.content.Intent;
-import android.os.Bundle;`
+import android.os.Bundle;`,
         );
       }
 
@@ -228,7 +231,7 @@ import android.os.Bundle;`
           `package app.hoarder.hoardermobile
 
 import android.content.Intent
-import android.os.Bundle`
+import android.os.Bundle`,
         );
       }
 

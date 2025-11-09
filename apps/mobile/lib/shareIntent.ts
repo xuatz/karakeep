@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import { useShareIntentContext as useExpoShareIntent } from "expo-share-intent";
+
 import { useAndroidShareIntent } from "../modules/android-share-intent/useAndroidShareIntent";
 
 /**
@@ -7,12 +8,17 @@ import { useAndroidShareIntent } from "../modules/android-share-intent/useAndroi
  * Uses custom implementation for Android and expo-share-intent for iOS
  */
 export function useShareIntent() {
+  // Call both hooks unconditionally (required by Rules of Hooks)
+  const androidResult = useAndroidShareIntent();
+  const iosResult = useExpoShareIntent();
+
+  // Return the appropriate result based on platform
   if (Platform.OS === "android") {
-    return useAndroidShareIntent();
+    return androidResult;
   }
 
   // For iOS and other platforms, return the expo-share-intent result
-  return useExpoShareIntent();
+  return iosResult;
 }
 
 /**

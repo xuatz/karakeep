@@ -1,17 +1,23 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Platform } from "react-native";
 import * as ExpoModules from "expo-modules-core";
 
 // Import types
-import type { ShareIntentData, AndroidShareIntentModule } from "./index";
+import type { AndroidShareIntentModule, ShareIntentData } from "./index";
 
 // Get the native module
 let AndroidShareIntent: AndroidShareIntentModule | null = null;
 if (Platform.OS === "android") {
   try {
-    AndroidShareIntent = ExpoModules.requireNativeModule<AndroidShareIntentModule>("AndroidShareIntent");
+    AndroidShareIntent =
+      ExpoModules.requireNativeModule<AndroidShareIntentModule>(
+        "AndroidShareIntent",
+      );
   } catch (error) {
-    console.warn("AndroidShareIntent native module not found. Share intent will not work.", error);
+    console.warn(
+      "AndroidShareIntent native module not found. Share intent will not work.",
+      error,
+    );
   }
 }
 
@@ -79,7 +85,10 @@ export function useAndroidShareIntent(): UseShareIntentResult {
         setShareIntent({});
         setError(null);
       } catch (err) {
-        console.error("[AndroidShareIntent] Error resetting share intent:", err);
+        console.error(
+          "[AndroidShareIntent] Error resetting share intent:",
+          err,
+        );
         setError(err instanceof Error ? err.message : "Unknown error");
       }
     }
