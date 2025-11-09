@@ -41,15 +41,10 @@ function SaveBookmark({ setMode }: { setMode: (mode: Mode) => void }) {
       resetShareIntent();
     }
   };
-  
+
   const { uploadAsset } = useUploadAsset(settings, {
     onSuccess: onSaved,
-    onError: () => {
-      setMode({ type: "error" });
-      if (hasShareIntent) {
-        resetShareIntent();
-      }
-    },
+    onError,
   });
 
   const invalidateAllBookmarks =
