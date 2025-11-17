@@ -91,7 +91,7 @@ export default function ResizableSidebar({
             variant="ghost"
             size="sm"
             onClick={toggleCollapse}
-            className="absolute left-2 top-2 z-10 h-8 w-8 rounded-full p-0"
+            className="absolute left-2 top-2 z-10 h-8 w-8 rounded-full border bg-background p-0 shadow-sm"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
