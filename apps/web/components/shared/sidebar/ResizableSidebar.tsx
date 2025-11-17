@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
@@ -8,6 +8,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ImperativePanelHandle } from "react-resizable-panels";
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
@@ -24,6 +25,7 @@ export default function ResizableSidebar({
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [defaultSize, setDefaultSize] = useState(DEFAULT_SIZE);
+  const panelRef = useRef<ImperativePanelHandle>(null);
 
   // Load saved state from localStorage on mount
   useEffect(() => {
@@ -42,8 +44,22 @@ export default function ResizableSidebar({
     }
   }, []);
 
+  // Collapse the panel if the state is set
+  useEffect(() => {
+    if (panelRef.current) {
+      if (isCollapsed) {
+        panelRef.current.collapse();
+      } else {
+        panelRef.current.expand();
+      }
+    }
+  }, [isCollapsed]);
+
   const handleResize = useCallback((size: number) => {
-    localStorage.setItem(SIDEBAR_WIDTH_KEY, size.toString());
+    // Don't save if the panel is collapsed
+    if (size > 0) {
+      localStorage.setItem(SIDEBAR_WIDTH_KEY, size.toString());
+    }
   }, []);
 
   const toggleCollapse = useCallback(() => {
@@ -57,26 +73,25 @@ export default function ResizableSidebar({
   return (
     <ResizablePanelGroup direction="horizontal" className="h-full w-full">
       <ResizablePanel
+        ref={panelRef}
         defaultSize={defaultSize}
         minSize={MIN_SIZE}
         maxSize={MAX_SIZE}
         collapsible={true}
         collapsedSize={0}
         onResize={handleResize}
-        ref={(ref) => {
-          if (ref && isCollapsed) {
-            ref.collapse();
-          }
-        }}
         className="relative"
       >
-        <div className="flex h-full flex-col">
-          {children}
+        <div className="flex h-full flex-col">{children}</div>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={100 - defaultSize} minSize={70}>
+        <div className="relative h-full">
           <Button
             variant="ghost"
             size="sm"
             onClick={toggleCollapse}
-            className="absolute right-0 top-2 z-10 h-8 w-8 rounded-full p-0"
+            className="absolute left-2 top-2 z-10 h-8 w-8 rounded-full p-0"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
@@ -85,11 +100,8 @@ export default function ResizableSidebar({
               <ChevronLeft className="h-4 w-4" />
             )}
           </Button>
+          {content}
         </div>
-      </ResizablePanel>
-      <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={100 - defaultSize} minSize={70}>
-        {content}
       </ResizablePanel>
     </ResizablePanelGroup>
   );
