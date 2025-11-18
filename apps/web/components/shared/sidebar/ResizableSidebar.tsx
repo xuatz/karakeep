@@ -10,7 +10,7 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
-const DEFAULT_SIZE = 20; // 20% of the viewport
+const DEFAULT_SIZE = 17; // ~240px on typical 1440px viewport (same as original w-60)
 const MIN_SIZE = 15; // Minimum 15%
 const MAX_SIZE = 30; // Maximum 30%
 
