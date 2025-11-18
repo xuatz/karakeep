@@ -1,13 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ImperativePanelHandle } from "react-resizable-panels";
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -59,6 +57,13 @@ export default function ResizableSidebar({
     // Don't save if the panel is collapsed
     if (size > 0) {
       localStorage.setItem(SIDEBAR_WIDTH_KEY, size.toString());
+      // If user manually resizes to expand, update collapsed state
+      setIsCollapsed(false);
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, "false");
+    } else {
+      // If size becomes 0, it's collapsed
+      setIsCollapsed(true);
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, "true");
     }
   }, []);
 
@@ -84,24 +89,13 @@ export default function ResizableSidebar({
       >
         <div className="flex h-full flex-col">{children}</div>
       </ResizablePanel>
-      <ResizableHandle withHandle />
+      <ResizableHandle
+        withHandle
+        onCollapseToggle={toggleCollapse}
+        isCollapsed={isCollapsed}
+      />
       <ResizablePanel defaultSize={100 - defaultSize} minSize={70}>
-        <div className="relative h-full">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleCollapse}
-            className="absolute left-2 top-2 z-10 h-8 w-8 rounded-full border bg-background p-0 shadow-sm"
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {isCollapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
-          </Button>
-          {content}
-        </div>
+        {content}
       </ResizablePanel>
     </ResizablePanelGroup>
   );
