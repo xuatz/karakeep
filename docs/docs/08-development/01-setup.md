@@ -132,27 +132,87 @@ To build and run the mobile app locally, you'll need:
 
 For detailed setup instructions, refer to the [Expo documentation](https://docs.expo.dev/guides/local-app-development/).
 
+#### TLDR??? THIS IS TOO VERBOSE!
+
+```sh
+# ios
+pnpm --filter mobile clean:prebuild:dev && APP_VARIANT=development pnpm ios
+
+# android
+pnpm --filter mobile clean:prebuild:dev && APP_VARIANT=development pnpm android
+```
+
+More details below if you want to understand what's going on
+
 #### Running the app
 
-- `cd apps/mobile`
-- `pnpm exec expo prebuild --no-install` to build the app.
+There are two steps: **prebuild** (generates native project files) and **run** (builds and launches the app).
+
+**Step 1: Prebuild**
+
+Basic prebuild:
+```bash
+pnpm --filter mobile expo prebuild --no-install
+```
+
+If you need a clean rebuild (e.g. after changing the bundleIdentifier/package), add `--clean`:
+```bash
+pnpm --filter mobile expo prebuild --no-install --clean
+```
+
+Or use the shorthand alias:
+```bash
+pnpm --filter mobile clean:prebuild
+```
+
+To run a **dev variant** alongside your production Karakeep app (without uninstalling it), set `APP_VARIANT=development` during a clean prebuild. This changes the bundleIdentifier/package so both versions can coexist:
+```bash
+APP_VARIANT=development pnpm --filter mobile expo prebuild --no-install --clean
+```
+
+Or use the shorthand alias:
+```bash
+pnpm --filter mobile clean:prebuild:dev
+```
+
+> **Note:** The installed app expects the dev server to be available and accessible.
+
+**Step 2: Run**
 
 **For iOS:**
-- `pnpm exec expo run:ios`
-- The app will be installed and started in the simulator.
+```bash
+pnpm ios
+```
+The app will be installed and started in the simulator.
 
-**Troubleshooting iOS Setup:**
-If you encounter an error like `xcrun: error: SDK "iphoneos" cannot be located`, you may need to set the correct Xcode developer directory:
+If you encounter `xcrun: error: SDK "iphoneos" cannot be located`, set the correct Xcode developer directory:
 ```bash
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
 
 **For Android:**
-- Start the Android emulator or connect a physical device.
-- `pnpm exec expo run:android`
-- The app will be installed and started on the emulator/device.
 
-Changing the code will hot reload the app. However, installing new packages requires restarting the expo server.
+Start the Android emulator or connect a physical device, then:
+```bash
+pnpm android
+```
+
+If you prebuilt with `APP_VARIANT=development`, make sure to pass it at run time too:
+```bash
+APP_VARIANT=development pnpm android
+```
+
+Changing code will hot reload the app. However, installing new packages requires restarting the expo server.
+
+**Installing a release build (Android only):**
+
+> **Note:** This may also work for iOS, but has not been confirmed due to lack of an iOS test device (of this author).
+
+To install the dev variant as a release build (no dev server required):
+```bash
+pnpm --filter mobile clean:prebuild:dev
+pnpm --filter mobile android:dev:release
+```
 
 ### Browser Extension
 
