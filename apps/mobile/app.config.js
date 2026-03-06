@@ -2,9 +2,16 @@ const IS_DEV = process.env.APP_VARIANT === "development";
 
 export default {
   expo: {
-    name: IS_DEV ? "Karakeep Dev" : "Karakeep",
+    ...(IS_DEV
+      ? {
+          name: "Karakeep Dev",
+          scheme: "karakeep-dev",
+        }
+      : {
+          name: "Karakeep",
+          schema: "karakeep",
+        }),
     slug: "hoarder",
-    scheme: "karakeep",
     version: "1.9.1",
     orientation: "portrait",
     icon: {
