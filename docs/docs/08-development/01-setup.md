@@ -132,6 +132,17 @@ To build and run the mobile app locally, you'll need:
 
 For detailed setup instructions, refer to the [Expo documentation](https://docs.expo.dev/guides/local-app-development/).
 
+#### Updating from an Older Version
+
+If you are returning to mobile development after a significant update to the source (e.g. Expo version bump or major dependency changes), the build may fail with stale artifacts in workspace `node_modules`. Run a clean wipe before reinstalling:
+
+```bash
+pnpm run clean:workspaces
+pnpm install
+```
+
+Then continue with the prebuild and run steps below.
+
 #### TLDR??? THIS IS TOO VERBOSE!
 
 ```sh
