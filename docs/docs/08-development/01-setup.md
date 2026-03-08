@@ -139,6 +139,7 @@ If you are returning to mobile development after a significant update to the sou
 ```bash
 pnpm run clean:workspaces
 pnpm install
+pnpm --filter @karakeep/mobile clean:prebuild
 ```
 
 Then continue with the prebuild and run steps below.
@@ -167,6 +168,8 @@ The app has three variants: development, preview, and release.
 | Release | Standalone app using the production bundle ID. Closest to a production build. | No | `pnpm --filter @karakeep/mobile ios:release` | `pnpm --filter @karakeep/mobile android:release` |
 
 In 90% of the cases, you'll want to use the development variant.
+
+Note: Changing the code will hot reload the app. However, installing new packages requires restarting the expo server.
 
 
 ### Browser Extension

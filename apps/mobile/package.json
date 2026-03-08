@@ -4,8 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "clean": "git clean -xdf .expo .turbo node_modules",
-    "clean:prebuild": "expo prebuild --no-install --clean",
-    "clean:prebuild:dev": "APP_VARIANT=development pnpm run clean:prebuild",
+    "clean:prebuild": "APP_VARIANT=development expo prebuild --no-install --clean",
     "expo": "expo",
     "start": "expo start",
     "android": "APP_VARIANT=development expo run:android",
