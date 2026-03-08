@@ -121,7 +121,7 @@ The worker app will automatically start headless chrome on startup for crawling 
 To build and run the mobile app locally, you'll need:
 
 - **For iOS development**: 
-  - macOS computer
+  - macOS
   - Xcode installed from the App Store
   - iOS Simulator (comes with Xcode)
 
@@ -143,87 +143,31 @@ pnpm install
 
 Then continue with the prebuild and run steps below.
 
-#### TLDR??? THIS IS TOO VERBOSE!
+#### Quick Start
 
 ```sh
 # ios
-pnpm --filter mobile clean:prebuild:dev && APP_VARIANT=development pnpm ios
+pnpm ios
 
 # android
-pnpm --filter mobile clean:prebuild:dev && APP_VARIANT=development pnpm android
-```
-
-More details below if you want to understand what's going on
-
-#### Running the app
-
-There are two steps: **prebuild** (generates native project files) and **run** (builds and launches the app).
-
-**Step 1: Prebuild**
-
-Basic prebuild:
-```bash
-pnpm --filter mobile expo prebuild --no-install
-```
-
-If you need a clean rebuild (e.g. after changing the bundleIdentifier/package), add `--clean`:
-```bash
-pnpm --filter mobile expo prebuild --no-install --clean
-```
-
-Or use the shorthand alias:
-```bash
-pnpm --filter mobile clean:prebuild
-```
-
-To run a **dev variant** alongside your production Karakeep app (without uninstalling it), set `APP_VARIANT=development` during a clean prebuild. This changes the bundleIdentifier/package so both versions can coexist:
-```bash
-APP_VARIANT=development pnpm --filter mobile expo prebuild --no-install --clean
-```
-
-Or use the shorthand alias:
-```bash
-pnpm --filter mobile clean:prebuild:dev
-```
-
-> **Note:** The installed app expects the dev server to be available and accessible.
-
-**Step 2: Run**
-
-**For iOS:**
-```bash
-pnpm ios
-```
-The app will be installed and started in the simulator.
-
-If you encounter `xcrun: error: SDK "iphoneos" cannot be located`, set the correct Xcode developer directory:
-```bash
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-```
-
-**For Android:**
-
-Start the Android emulator or connect a physical device, then:
-```bash
 pnpm android
 ```
 
-If you prebuilt with `APP_VARIANT=development`, make sure to pass it at run time too:
-```bash
-APP_VARIANT=development pnpm android
-```
+More details below if you want to understand what's going on.
 
-Changing code will hot reload the app. However, installing new packages requires restarting the expo server.
 
-**Installing a release build (Android only):**
+#### Details
 
-> **Note:** This may also work for iOS, but has not been confirmed due to lack of an iOS test device (of this author).
+The app has three variants: development, preview, and release.
 
-To install the dev variant as a release build (no dev server required):
-```bash
-pnpm --filter mobile clean:prebuild:dev
-pnpm --filter mobile android:dev:release
-```
+| Variant | Description | Expo Dev Tools | Command (iOS) | Command (Android) |
+|---------|-------------|----------------|---------------|--------------------|
+| Development (default) | Requires the expo devserver to be running. Uses a separate bundle ID so it can be installed alongside the production app. | Yes | `pnpm ios` | `pnpm android` |
+| Preview | Standalone app that doesn't require the expo devserver. Uses its own bundle ID. | No | `pnpm --filter @karakeep/mobile ios:preview` | `pnpm --filter @karakeep/mobile android:preview` |
+| Release | Standalone app using the production bundle ID. Closest to a production build. | No | `pnpm --filter @karakeep/mobile ios:release` | `pnpm --filter @karakeep/mobile android:release` |
+
+In 90% of the cases, you'll want to use the development variant.
+
 
 ### Browser Extension
 

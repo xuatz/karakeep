@@ -4,12 +4,12 @@ export default {
   expo: {
     ...(IS_DEV
       ? {
-          name: "Karakeep Dev",
+          name: "Karakeep (Dev)",
           scheme: "karakeep-dev",
         }
       : {
           name: "Karakeep",
-          schema: "karakeep",
+          scheme: "karakeep",
         }),
     slug: "hoarder",
     version: "1.9.1",
