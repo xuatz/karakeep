@@ -169,6 +169,8 @@ The app has three variants: development, preview, and release.
 
 In 90% of the cases, you'll want to use the development variant.
 
+In 99% of the cases, you also probably want to add `SENTRY_DISABLE_AUTO_UPLOAD=true`, unless you have your own sentry project DSN to provide, otherwise, the build will fail.
+
 Note: Changing the code will hot reload the app. However, installing new packages requires restarting the expo server.
 
 
