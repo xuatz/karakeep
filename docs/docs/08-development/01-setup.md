@@ -2,60 +2,44 @@
 
 ## Quick Start
 
-### Docker Compose
-
-1. (Optional) Copy the sample env file whenever you need to override the defaults or commit real secrets:
-
-```bash
-cp .env.sample .env
-```
-
-   - Even if you skip this step, the compose file injects sensible defaults: `DATA_DIR=/data`, `MEILI_ADDR=http://meilisearch:7700`, `NEXTAUTH_URL=http://localhost:3000`, and `NEXTAUTH_SECRET=dev-nextauth-secret`.
-   - When you're ready, set at least `NEXTAUTH_SECRET` (use `openssl rand -base64 36`) and any optional keys like `OPENAI_API_KEY` inside `.env` so they override the defaults.
-   - The stack automatically mounts `/data` inside the containers, so you only need to change `DATA_DIR` if you prefer a host path.
-2. Start every dependency, install packages, and run migrations in one go:
-
-```bash
-docker compose -f docker/docker-compose.dev.yml up
-```
-
-   - The `prep` service creates `DATA_DIR` (if missing), runs `pnpm install --frozen-lockfile`, and then `pnpm run db:migrate` the first time (and whenever you restart the stack) so the rest of the services always have dependencies ready.
-   - The `web` and `workers` services run `pnpm web` and `pnpm workers` respectively using the exact same code that lives on your host machine, so hot reload works out of the box.
-3. Tail the dev logs when needed:
-
-```bash
-docker compose logs -f web workers
-```
-
-4. Stop everything with `docker compose down`. Re-run with `--build` if you change Node dependencies or the Dockerfile.
-
-This setup exposes the usual endpoints:
-- Web app: http://localhost:3000
-- Meilisearch: http://localhost:7700
-- Chrome debugger: http://localhost:9222
-
-### Host script alternative
-
-If you prefer to keep pnpm running directly on your machine, you can still use the legacy helper script:
+For the fastest way to get started with development, use the one-command setup script:
 
 ```bash
 ./start-dev.sh
 ```
 
-It starts Meilisearch + Chrome in Docker, installs dependencies if needed, and then runs the web app and workers locally until you hit Ctrl+C.
+This script will automatically:
+- Start Meilisearch in Docker (on port 7700)
+- Start headless Chrome in Docker (on port 9222)
+- Install dependencies with `pnpm install` if needed
+- Start both the web app and workers in parallel
+- Provide cleanup when you stop with Ctrl+C
+
+**Prerequisites:**
+- Docker installed and running
+- pnpm installed (see manual setup below for installation instructions)
+
+The script will output the running services:
+- Web app: http://localhost:3000
+- Meilisearch: http://localhost:7700  
+- Chrome debugger: http://localhost:9222
+
+Press Ctrl+C to stop all services and clean up Docker containers.
+
+Alternatively, you can use Docker Compose to run the full stack in containers — see [Docker Compose Details](#docker-compose-details) below.
 
 ## Manual Setup
 
-Karakeep uses `node` version 22. To install it, you can use `nvm` [^1]
+Karakeep uses `node` version 24. To install it, you can use `nvm` [^1]
 
 ```
-$ nvm install  22
+$ nvm install 24
 ```
 
 Verify node version using this command:
 ```
 $ node --version
-v22.14.0
+v24.0.0
 ```
 
 Karakeep also makes use of `corepack`[^2]. If you have `node` installed, then `corepack` should already be
@@ -204,7 +188,40 @@ In dev mode, opening and closing the plugin menu should reload the code.
 
 ## Docker Compose Details
 
-`docker compose -f docker/docker-compose.dev.yml up` starts five services defined at the repo root:
+If you prefer to run the full stack inside Docker, follow these steps:
+
+1. (Optional) Copy the sample env file whenever you need to override the defaults or commit real secrets:
+
+```bash
+cp .env.sample .env
+```
+
+   - Even if you skip this step, the compose file injects sensible defaults: `DATA_DIR=/data`, `MEILI_ADDR=http://meilisearch:7700`, `NEXTAUTH_URL=http://localhost:3000`, and `NEXTAUTH_SECRET=super-secure-nextauth-secret`.
+   - When you're ready, set at least `NEXTAUTH_SECRET` (use `openssl rand -base64 36`) and any optional keys like `OPENAI_API_KEY` inside `.env` so they override the defaults.
+   - The stack automatically mounts `/data` inside the containers, so you only need to change `DATA_DIR` if you prefer a host path.
+2. Start every dependency, install packages, and run migrations in one go:
+
+```bash
+docker compose -f docker/docker-compose.dev.yml up
+```
+
+   - The `prep` service creates `DATA_DIR` (if missing), runs `pnpm install --frozen-lockfile`, and then `pnpm run db:migrate` the first time (and whenever you restart the stack) so the rest of the services always have dependencies ready.
+   - The `web` and `workers` services run `pnpm web` and `pnpm workers` respectively using the same code that lives on your host machine, so hot reload works out of the box.
+3. Tail the dev logs when needed:
+
+```bash
+docker compose logs -f web workers
+```
+
+4. Stop everything with `docker compose down`. Re-run with `--build` if you change Node dependencies or the Dockerfile.
+
+This setup exposes:
+- Web app: http://localhost:3000
+- Chrome debugger: http://localhost:9222
+
+Meilisearch runs as an internal service only (no host port exposed).
+
+`docker compose -f docker/docker-compose.dev.yml up` starts five services:
 
 - `prep`: installs dependencies and runs database migrations before anything else boots.
 - `web`: runs `pnpm web` with hot reload enabled (polling watchers are turned on for reliable Mac/Windows file sync).
