@@ -126,6 +126,20 @@ const allEnv = z.object({
   BROWSER_COOKIE_PATH: z.string().optional(),
   CRAWLER_JOB_TIMEOUT_SEC: z.coerce.number().default(60),
   CRAWLER_NAVIGATE_TIMEOUT_SEC: z.coerce.number().default(30),
+  CRAWLER_BROWSER_TIMEZONE: z
+    .string()
+    .refine(
+      (tz) => {
+        try {
+          new Intl.DateTimeFormat("en-US", { timeZone: tz });
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "must be a valid IANA timezone (e.g. America/New_York)" },
+    )
+    .optional(),
   CRAWLER_NUM_WORKERS: z.coerce.number().default(1),
   INFERENCE_NUM_WORKERS: z.coerce.number().default(1),
   SEARCH_NUM_WORKERS: z.coerce.number().default(1),
@@ -406,6 +420,7 @@ const serverConfigSchema = allEnv.transform((val, ctx) => {
       browserCookiePath: val.BROWSER_COOKIE_PATH,
       jobTimeoutSec: val.CRAWLER_JOB_TIMEOUT_SEC,
       navigateTimeoutSec: val.CRAWLER_NAVIGATE_TIMEOUT_SEC,
+      browserTimezone: val.CRAWLER_BROWSER_TIMEZONE,
       downloadBannerImage: val.CRAWLER_DOWNLOAD_BANNER_IMAGE,
       storeScreenshot: val.CRAWLER_STORE_SCREENSHOT,
       fullPageScreenshot: val.CRAWLER_FULL_PAGE_SCREENSHOT,

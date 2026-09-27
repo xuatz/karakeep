@@ -651,6 +651,9 @@ export async function crawlPage(
           browser.newContext({
             viewport: { width: 1440, height: 900 },
             userAgent,
+            // A UTC browser behind a proxy that geolocates elsewhere is a
+            // strong bot signal; this should match the proxy's location.
+            timezoneId: serverConfig.crawler.browserTimezone,
             proxy: proxyConfig,
             serviceWorkers: "block",
           }),
