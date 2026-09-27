@@ -80,6 +80,7 @@ describe("isLikelyChallengePage", () => {
     ).toBe(true);
     expect(isLikelyChallengePage({ title: "Access Denied" })).toBe(true);
     expect(isLikelyChallengePage({ title: "Robot Check" })).toBe(true);
+    expect(isLikelyChallengePage({ title: "Robot or human?" })).toBe(true);
   });
 
   it("does not match challenge titles as substrings of real titles", () => {

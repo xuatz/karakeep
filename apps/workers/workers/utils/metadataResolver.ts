@@ -15,6 +15,7 @@ const CHALLENGE_PAGE_TITLES = new Set([
   // PerimeterX
   "access to this page has been denied",
   "access to this page has been denied.",
+  "robot or human?",
   // Amazon / Bloomberg
   "robot check",
   "are you a robot?",
