@@ -23,7 +23,7 @@ import { setUrlHostnameFromResolvedAddress } from "@karakeep/shared/utils/url";
 import { tryCatch } from "@karakeep/shared/tryCatch";
 
 import { loadAutoconsent } from "./autoconsent";
-import { redactUrlCredentials } from "./utils";
+import { normalizeBrowserUserAgent, redactUrlCredentials } from "./utils";
 
 interface Cookie {
   name: string;
@@ -102,6 +102,36 @@ export function getPlaywrightProxyConfig(
     password: parsed.password,
     bypass: runProxy.noProxy?.join(","),
   };
+}
+
+const browserUserAgents = new WeakMap<Browser, Promise<string | undefined>>();
+
+/**
+ * Returns the user agent to use for crawl contexts, derived from the connected
+ * browser so it always matches the browser's real version, platform, and
+ * client hints. Resolves to undefined (keep the browser's default) if the
+ * browser can't be queried.
+ */
+export function getBrowserUserAgent(
+  browser: Browser,
+): Promise<string | undefined> {
+  let userAgent = browserUserAgents.get(browser);
+  if (!userAgent) {
+    userAgent = (async () => {
+      const session = await browser.newBrowserCDPSession();
+      try {
+        const version = await session.send("Browser.getVersion");
+        return normalizeBrowserUserAgent(version.userAgent);
+      } finally {
+        await session.detach().catch(() => undefined);
+      }
+    })().catch((e: unknown) => {
+      logger.warn(`[Crawler] Failed to read the browser's user agent: ${e}`);
+      return undefined;
+    });
+    browserUserAgents.set(browser, userAgent);
+  }
+  return userAgent;
 }
 
 /**

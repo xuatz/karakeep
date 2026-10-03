@@ -41,6 +41,7 @@ import {
   PAGE_CLOSE_TIMEOUT_MS,
   getGlobalBlocker,
   getGlobalBrowser,
+  getBrowserUserAgent,
   getGlobalCookies,
   getPlaywrightProxyConfig,
   startBrowserInstance,
@@ -634,6 +635,7 @@ export async function crawlPage(
       }
 
       const proxyConfig = getPlaywrightProxyConfig(runProxy);
+      const userAgent = await getBrowserUserAgent(browser);
       const isRunningInProxyContext =
         proxyConfig !== undefined &&
         !matchesNoProxy(url, proxyConfig.bypass?.split(",") ?? []);
@@ -648,8 +650,7 @@ export async function crawlPage(
         async () =>
           browser.newContext({
             viewport: { width: 1440, height: 900 },
-            userAgent:
-              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            userAgent,
             proxy: proxyConfig,
             serviceWorkers: "block",
           }),
