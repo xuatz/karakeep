@@ -1,5 +1,5 @@
 diff --git a/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt b/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt
-index ff5b1001e7bb3443482727cec48c22579465c73b..1ae6de08f1c8481121521d637f621ad86c073775 100644
+index ff5b1001e7bb3443482727cec48c22579465c73b..ea6c49ae22e8cc9126e45ffe163b3cc492413a7a 100644
 --- a/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt
 +++ b/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt
 @@ -41,6 +41,9 @@ class ExpoShareIntentModule : Module() {
@@ -59,6 +59,25 @@ index ff5b1001e7bb3443482727cec48c22579465c73b..1ae6de08f1c8481121521d637f621ad8
          }
  
          OnCreate {
+@@ -223,15 +242,9 @@ class ExpoShareIntentModule : Module() {
+             if (DocumentsContract.isDocumentUri(context, uri)) {
+                 // ExternalStorageProvider
+                 if (isExternalStorageDocument(uri)) {
+-                    val docId = DocumentsContract.getDocumentId(uri)
+-                    val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+-                    val type = split[0]
+-
+-                    return if ("primary".equals(type, ignoreCase = true)) {
+-                        Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+-                    } else {
+-                        getDataColumn(uri, null, null)
+-                    }
++                    // Copy it like any other content uri: with scoped storage the app can't read
++                    // the file path of a document in shared storage, even on the primary volume.
++                    return getDataColumn(uri, null, null)
+                 } else if (isDownloadsDocument(uri)) {
+                     return try {
+                         val id = DocumentsContract.getDocumentId(uri)
 diff --git a/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt b/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt
 index db573ecbd560de3c71aa443b7ad88d1b5e1c8dc7..17a0efcb3839b883814c35697fde8b2759bfea19 100644
 --- a/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt
