@@ -31,7 +31,6 @@ import serverConfig from "@karakeep/shared/config";
 import logger from "@karakeep/shared/logger";
 import { tryCatch } from "@karakeep/shared/tryCatch";
 
-import type { AutoconsentHandle } from "./autoconsent";
 import {
   installAutoconsent,
   waitForPageLoadAndAutoconsent,
@@ -218,7 +217,7 @@ async function installRedirectGuard(
  */
 interface SetupPageResult {
   page: Page;
-  autoconsent: AutoconsentHandle | undefined;
+  autoconsentEnabled: boolean;
 }
 
 async function setupPage(
@@ -306,7 +305,7 @@ async function setupPage(
       // Install autoconsent AFTER the redirect guard and SSRF request router
       // are in place (conservative ordering; it injects scripts). No-op unless
       // enabled and the bundle loaded.
-      const autoconsent = await installAutoconsent(nextPage, jobId);
+      const autoconsentEnabled = await installAutoconsent(nextPage, jobId);
 
       // On abort, immediately stop intercepting requests so that
       // in-flight route handlers don't block page/context closure.
@@ -323,7 +322,7 @@ async function setupPage(
         { once: true },
       );
 
-      return { page: nextPage, autoconsent };
+      return { page: nextPage, autoconsentEnabled };
     },
   );
 }
@@ -672,7 +671,6 @@ export async function crawlPage(
 
         const setup = await setupPage(context, jobId, proxyConfig, abortSignal);
         page = setup.page;
-        const autoconsentHandle = setup.autoconsent;
 
         // page is guaranteed to be assigned here; alias to a const for
         // TypeScript narrowing so the rest of the try block sees `Page`.
@@ -748,8 +746,9 @@ export async function crawlPage(
         );
 
         await waitForPageLoadAndAutoconsent(
+          activePage,
           pageLoad,
-          autoconsentHandle,
+          setup.autoconsentEnabled,
           abortSignal,
         );
 
