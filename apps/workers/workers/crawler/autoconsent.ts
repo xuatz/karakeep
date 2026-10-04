@@ -12,7 +12,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import * as path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import type { Page } from "playwright";
+import type { Page } from "patchright";
 import { abortRaceResolve, raceWith } from "utils";
 
 import serverConfig from "@karakeep/shared/config";
@@ -108,24 +108,29 @@ export async function installAutoconsent(
 
 /**
  * Waits (capped at AUTOCONSENT_WAIT_MS, abort-aware) until the main frame's
- * autoconsent lifecycle leaves `pendingStates`.
+ * autoconsent lifecycle leaves `pendingStates`, and returns that lifecycle
+ * (undefined on timeout/abort). Reads it through waitForFunction, which runs in
+ * the page's main world (where the bundle lives) in both Playwright and
+ * patchright; patchright's page.evaluate defaults to an isolated world.
  */
 async function waitWhileIn(
   page: Page,
   pendingStates: string[],
   abortSignal: AbortSignal,
-): Promise<void> {
-  await raceWith<unknown>(
+): Promise<string | undefined> {
+  return await raceWith<string | undefined>(
     page
       .waitForFunction(
-        (pending) =>
-          !pending.includes(
+        (pending) => {
+          const lifecycle =
             globalThis.autoconsentStandalone?.instance.state.lifecycle ??
-              "loading",
-          ),
+            "loading";
+          return pending.includes(lifecycle) ? false : lifecycle;
+        },
         pendingStates,
         { timeout: AUTOCONSENT_WAIT_MS, polling: 100 },
       )
+      .then(async (handle) => (await handle.jsonValue()) || undefined)
       .catch(() => undefined),
     abortRaceResolve(abortSignal, undefined),
   );
@@ -152,11 +157,7 @@ export async function waitForPageLoadAndAutoconsent(
     return;
   }
   await Promise.all([pageLoad, waitWhileIn(page, PENDING_STATES, abortSignal)]);
-  await waitWhileIn(page, OPTING_OUT_STATES, abortSignal);
-
-  const lifecycle = await page
-    .evaluate(() => globalThis.autoconsentStandalone?.instance.state.lifecycle)
-    .catch(() => undefined);
+  const lifecycle = await waitWhileIn(page, OPTING_OUT_STATES, abortSignal);
   if (lifecycle && OPTED_OUT_STATES.includes(lifecycle)) {
     await sleep(DISMISS_SETTLE_MS, undefined, { signal: abortSignal }).catch(
       () => undefined,

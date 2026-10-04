@@ -11,9 +11,14 @@ import { Mutex } from "async-mutex";
 import { exitAbortController } from "exit";
 import { fetchWithProxy } from "network";
 import type { RunProxyConfig } from "network";
-import { Browser, BrowserContext, BrowserContextOptions } from "playwright";
-import { chromium } from "playwright-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
+// patchright is a drop-in Playwright fork that drives Chrome without enabling
+// the CDP Runtime domain, the most widely checked automation signal.
+import {
+  Browser,
+  BrowserContext,
+  BrowserContextOptions,
+  chromium,
+} from "patchright";
 import { raceWith, timeoutRace } from "utils";
 import { z } from "zod";
 
@@ -297,12 +302,11 @@ async function loadCookiesFromFile(): Promise<void> {
 }
 
 /**
- * One-time setup of the crawler's browser environment: stealth plugin,
- * adblocker, the shared browser connection (unless connecting on demand),
- * cookies, and the stale-context reaper.
+ * One-time setup of the crawler's browser environment: adblocker, the shared
+ * browser connection (unless connecting on demand), cookies, and the
+ * stale-context reaper.
  */
 export async function initializeBrowserEnvironment(): Promise<void> {
-  chromium.use(StealthPlugin());
   await loadAdblocker();
   loadAutoconsent();
   if (!serverConfig.crawler.browserConnectOnDemand) {

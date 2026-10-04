@@ -17,7 +17,7 @@ import {
   BrowserContextOptions,
   CDPSession,
   Page,
-} from "playwright";
+} from "patchright";
 import { abortRace, abortRaceResolve, raceWith, timeoutRace } from "utils";
 
 import { db } from "@karakeep/db";
