@@ -47,6 +47,7 @@ import {
   trackContext,
   untrackContext,
 } from "./browser";
+import { waitForChallengeToClear } from "./challenge";
 import { truncateUrl } from "./utils";
 
 const tracer = getTracer("@karakeep/workers");
@@ -695,6 +696,18 @@ export async function crawlPage(
           );
         }
         const targetUrl = navigationValidation.url.toString();
+        // Tracks the status of the latest main-frame document, which differs
+        // from the initial navigation's when a bot challenge clears and
+        // reloads into the real page.
+        let mainDocumentStatus: number | undefined;
+        activePage.on("response", (res) => {
+          if (
+            res.request().isNavigationRequest() &&
+            res.frame() === activePage.mainFrame()
+          ) {
+            mainDocumentStatus = res.status();
+          }
+        });
         logger.info(`[Crawler][${jobId}] Navigating to "${targetUrl}"`);
         const response = await withSpan(
           tracer,
@@ -751,8 +764,20 @@ export async function crawlPage(
           setup.autoconsentEnabled,
           abortSignal,
         );
-
         abortSignal.throwIfAborted();
+
+        await withSpan(
+          tracer,
+          "crawlerWorker.crawlPage.waitForChallenge",
+          { attributes: { "job.id": jobId } },
+          () =>
+            waitForChallengeToClear(
+              activePage,
+              mainDocumentStatus ?? response?.status() ?? 0,
+              jobId,
+              abortSignal,
+            ),
+        );
 
         logger.info(
           `[Crawler][${jobId}] Finished waiting for the page to load.`,
@@ -767,7 +792,7 @@ export async function crawlPage(
 
         return {
           htmlContent,
-          statusCode: response?.status() ?? 0,
+          statusCode: mainDocumentStatus ?? response?.status() ?? 0,
           screenshot,
           pdf,
           url: activePage.url(),

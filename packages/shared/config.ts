@@ -126,6 +126,7 @@ const allEnv = z.object({
   BROWSER_COOKIE_PATH: z.string().optional(),
   CRAWLER_JOB_TIMEOUT_SEC: z.coerce.number().default(60),
   CRAWLER_NAVIGATE_TIMEOUT_SEC: z.coerce.number().default(30),
+  CRAWLER_CHALLENGE_WAIT_SEC: z.coerce.number().default(15),
   CRAWLER_BROWSER_TIMEZONE: z
     .string()
     .refine(
@@ -420,6 +421,7 @@ const serverConfigSchema = allEnv.transform((val, ctx) => {
       browserCookiePath: val.BROWSER_COOKIE_PATH,
       jobTimeoutSec: val.CRAWLER_JOB_TIMEOUT_SEC,
       navigateTimeoutSec: val.CRAWLER_NAVIGATE_TIMEOUT_SEC,
+      challengeWaitSec: val.CRAWLER_CHALLENGE_WAIT_SEC,
       browserTimezone: val.CRAWLER_BROWSER_TIMEZONE,
       downloadBannerImage: val.CRAWLER_DOWNLOAD_BANNER_IMAGE,
       storeScreenshot: val.CRAWLER_STORE_SCREENSHOT,
