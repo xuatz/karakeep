@@ -46,6 +46,7 @@ import {
 } from "@karakeep/shared/types/bookmarks";
 import { getBookmarkTitle } from "@karakeep/shared/utils/bookmarkUtils";
 
+import { BookmarkListsEditor } from "./BookmarkListsEditor";
 import { BookmarkTagsEditor } from "./BookmarkTagsEditor";
 
 const formSchema = zUpdateBookmarksRequestSchema.extend({
@@ -419,6 +420,14 @@ export function EditBookmarkDialog({
               <FormLabel>{t("common.tags")}</FormLabel>
               <FormControl>
                 <BookmarkTagsEditor bookmark={bookmark} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>{t("common.lists")}</FormLabel>
+              <FormControl>
+                <BookmarkListsEditor bookmarkId={bookmark.id} />
               </FormControl>
               <FormMessage />
             </FormItem>

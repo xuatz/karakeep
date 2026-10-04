@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BookmarkListsEditor } from "@/components/dashboard/bookmarks/BookmarkListsEditor";
 import { BookmarkTagsEditor } from "@/components/dashboard/bookmarks/BookmarkTagsEditor";
 import { FullPageSpinner } from "@/components/ui/full-page-spinner";
 import { Separator } from "@/components/ui/separator";
@@ -216,6 +217,17 @@ export default function BookmarkPreview({
         </p>
         <BookmarkTagsEditor bookmark={bookmark} disabled={!isOwner} />
       </div>
+      {isOwner && (
+        <>
+          <Separator />
+          <div className="flex flex-col gap-1.5">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              {t("common.lists")}
+            </p>
+            <BookmarkListsEditor bookmarkId={bookmark.id} />
+          </div>
+        </>
+      )}
       <Separator />
       <div className="flex flex-col gap-1.5">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
