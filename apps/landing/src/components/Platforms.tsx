@@ -62,7 +62,7 @@ export default function Platforms() {
         ))}
         <a
           href="/apps/"
-          className="flex items-center gap-1 font-medium text-[#7c3aed] transition-colors hover:text-[#6d28d9]"
+          className="flex items-center gap-1 font-medium text-neutral-900 transition-colors hover:text-neutral-600"
         >
           All apps
           <ArrowUpRight className="size-3.5" />

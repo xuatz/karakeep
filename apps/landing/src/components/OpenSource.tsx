@@ -7,7 +7,7 @@ import TerminalCard from "./TerminalCard";
 
 export default function OpenSource() {
   return (
-    <section className="bg-[#151221] px-4 py-16 sm:py-[104px]">
+    <section className="bg-[#171717] px-4 py-16 sm:py-[104px]">
       <div className="mx-auto max-w-4xl text-center">
         <Github className="mx-auto size-12 text-white" />
         <h2 className="font-display mt-7 text-3xl font-bold tracking-tight text-white sm:text-[40px] sm:leading-[1.15]">
@@ -34,7 +34,7 @@ export default function OpenSource() {
             href={`${DOCS_LINK}/installation/docker`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-[#4a4162] px-8 text-base font-medium text-white transition-colors hover:bg-white/5"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-[#525252] px-8 text-base font-medium text-white transition-colors hover:bg-white/5"
           >
             Self-hosting docs
           </a>

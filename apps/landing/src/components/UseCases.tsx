@@ -55,7 +55,7 @@ export default function UseCases() {
   return (
     <section className="bg-white px-4 pb-24 pt-8">
       <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
-        <span className="bg-gradient-to-r from-[#7c3aed] to-[#db2777] bg-clip-text text-xs font-bold tracking-[0.14em] text-transparent">
+        <span className="text-xs font-bold tracking-[0.14em] text-neutral-500">
           USE CASES
         </span>
         <h2 className="font-display mt-3.5 text-3xl font-bold tracking-tight text-neutral-900 sm:text-[44px] sm:leading-[1.15]">
