@@ -24,8 +24,8 @@ export default function OpenSource() {
             target="_blank"
             rel="noreferrer"
             className={cn(
-              "gap-2 bg-white px-8 text-neutral-900 hover:bg-neutral-100",
               buttonVariants({ size: "lg" }),
+              "gap-2 bg-white px-8 text-neutral-900 hover:bg-neutral-100",
             )}
           >
             <Github className="size-5" /> View on GitHub
