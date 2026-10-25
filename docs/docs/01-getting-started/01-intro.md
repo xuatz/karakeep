@@ -38,7 +38,7 @@ Karakeep (previously Hoarder) is an open source "Bookmark Everything" app that u
 
 ## Demo
 
-You can access the demo at [https://try.karakeep.app](https://try.karakeep.app). Login with the following creds:
+You can access the demo at [https://try.karakeep.com](https://try.karakeep.com). Login with the following creds:
 
 ```
 email: demo@karakeep.app
